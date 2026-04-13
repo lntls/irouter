@@ -8,7 +8,7 @@ part 'route.dart';
 abstract interface class IRoutingController<T extends Record> {
   RouterConfig<Object> get config;
 
-  Future<R> push<R, A>(IRouteEntry<R, A> Function(T) selector);
+  Future<R> push<R, A extends Record>(IRouteEntry<R, A> Function(T) selector);
 
   bool get canPop;
 
@@ -27,7 +27,7 @@ class _IRouteInformationParser
   }
 }
 
-class _IPage<R, A> extends Page<Object?> {
+class _IPage<R, A extends Record> extends Page<Object?> {
   _IPage({required this.pageBuilder, required this.entry, super.onPopInvoked})
     : super(key: ValueKey(entry));
 
@@ -64,7 +64,7 @@ class _IRouterDelegate<T extends Record>
   _IRouterDelegate({
     required T Function(IRouteFactory) routes,
     required this.defaultPageBuilder,
-    required List<IRouteEntry<Object?, Object?>> Function(T) initialRoutes,
+    required List<IRouteEntry<Object?, Record>> Function(T) initialRoutes,
   }) : _definedRoutes = routes(IRouteFactory._()) {
     _pages = initialRoutes(_definedRoutes)
         .map((entry) => _IPage(pageBuilder: defaultPageBuilder, entry: entry))
@@ -90,7 +90,7 @@ class _IRouterDelegate<T extends Record>
   }
 
   @override
-  Future<R> push<R, A>(IRouteEntry<R, A> Function(T) selector) async {
+  Future<R> push<R, A extends Record>(IRouteEntry<R, A> Function(T) selector) async {
     final resultCompleter = Completer<R>();
     final entry = selector(_definedRoutes);
     final newPage = _IPage(
@@ -156,7 +156,7 @@ abstract base class IRouter<T extends Record> {
   factory IRouter({
     required IPageBuilder pageBuilder,
     required T Function(IRouteFactory) routes,
-    required List<IRouteEntry<Object?, Object?>> Function(T) initialRoutes,
+    required List<IRouteEntry<Object?, Record>> Function(T) initialRoutes,
   }) = _IRouter;
 
   IRoutingController<T> createRoutingController();
@@ -175,7 +175,7 @@ final class _IRouter<T extends Record> extends IRouter<T> {
 
   final T Function(IRouteFactory) routes;
 
-  final List<IRouteEntry<Object?, Object?>> Function(T) initialRoutes;
+  final List<IRouteEntry<Object?, Record>> Function(T) initialRoutes;
 
   @override
   IRoutingController<T> of(BuildContext context) {

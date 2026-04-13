@@ -28,17 +28,17 @@ class _IRouteInformationParser
 }
 
 class _IPage<R, A> extends Page<Object?> {
-  _IPage({required this.routeBuilder, required this.entry, super.onPopInvoked})
+  _IPage({required this.pageBuilder, required this.entry, super.onPopInvoked})
     : super(key: ValueKey(entry));
 
-  final IPageBuilder routeBuilder;
+  final IPageBuilder pageBuilder;
   final IRouteEntry<R, A> entry;
 
   @override
   Route<Object?> createRoute(BuildContext context) {
     final content = entry._route._widgetBuilder(context, entry._args);
-    final routeBuilder = entry._route._routeBuilder ?? this.routeBuilder;
-    return routeBuilder.createRoute(context, this, content);
+    final pageBuilder = entry._route._pageBuilder ?? this.pageBuilder;
+    return pageBuilder.createRoute(context, this, content);
   }
 }
 
@@ -63,15 +63,15 @@ class _IRouterDelegate<T extends Record>
     implements IRoutingController<T> {
   _IRouterDelegate({
     required T Function(IRouteFactory) routes,
-    required this.defaultRouteBuilder,
+    required this.defaultPageBuilder,
     required List<IRouteEntry<Object?, Object?>> Function(T) initialRoutes,
   }) : _definedRoutes = routes(IRouteFactory._()) {
     _pages = initialRoutes(_definedRoutes)
-        .map((entry) => _IPage(routeBuilder: defaultRouteBuilder, entry: entry))
+        .map((entry) => _IPage(pageBuilder: defaultPageBuilder, entry: entry))
         .toList();
   }
 
-  final IPageBuilder defaultRouteBuilder;
+  final IPageBuilder defaultPageBuilder;
 
   final T _definedRoutes;
 
@@ -94,7 +94,7 @@ class _IRouterDelegate<T extends Record>
     final resultCompleter = Completer<R>();
     final entry = selector(_definedRoutes);
     final newPage = _IPage(
-      routeBuilder: defaultRouteBuilder,
+      pageBuilder: defaultPageBuilder,
       entry: entry,
       onPopInvoked: (didPop, result) {
         if (didPop) {
@@ -154,7 +154,7 @@ abstract base class IRouter<T extends Record> {
   IRouter._();
 
   factory IRouter({
-    required IPageBuilder routeBuilder,
+    required IPageBuilder pageBuilder,
     required T Function(IRouteFactory) routes,
     required List<IRouteEntry<Object?, Object?>> Function(T) initialRoutes,
   }) = _IRouter;
@@ -167,11 +167,11 @@ abstract base class IRouter<T extends Record> {
 final class _IRouter<T extends Record> extends IRouter<T> {
   _IRouter({
     required this.routes,
-    required this.routeBuilder,
+    required this.pageBuilder,
     required this.initialRoutes,
   }) : super._();
 
-  final IPageBuilder routeBuilder;
+  final IPageBuilder pageBuilder;
 
   final T Function(IRouteFactory) routes;
 
@@ -188,7 +188,7 @@ final class _IRouter<T extends Record> extends IRouter<T> {
   IRoutingController<T> createRoutingController() {
     return _IRouterDelegate(
       routes: routes,
-      defaultRouteBuilder: routeBuilder,
+      defaultPageBuilder: pageBuilder,
       initialRoutes: initialRoutes,
     );
   }

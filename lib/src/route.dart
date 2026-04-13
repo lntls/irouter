@@ -34,11 +34,11 @@ final class IRouteEntry<R, A> {
 final class IRoute<R, A> {
   IRoute._({
     required Widget Function(BuildContext, A) widgetBuilder,
-    IPageBuilder? routeBuilder,
+    IPageBuilder? pageBuilder,
   }) : _widgetBuilder = widgetBuilder,
-       _routeBuilder = routeBuilder;
+       _pageBuilder = pageBuilder;
 
-  final IPageBuilder? _routeBuilder;
+  final IPageBuilder? _pageBuilder;
 
   final Widget Function(BuildContext, A) _widgetBuilder;
 }
@@ -64,7 +64,7 @@ final class IRouteBuilder<R> {
 extension IRouteBuilderWithArgsExtension<R> on IRouteBuilder<R> {
   IRoute<R, Never> build(Widget Function(BuildContext) builder) {
     return IRoute._(
-      routeBuilder: pageBuilder,
+      pageBuilder: pageBuilder,
       widgetBuilder: (context, _) => builder(context),
     );
   }
@@ -73,7 +73,7 @@ extension IRouteBuilderWithArgsExtension<R> on IRouteBuilder<R> {
     Widget Function(BuildContext, A) builder,
   ) {
     return IRoute._(
-      routeBuilder: pageBuilder,
+      pageBuilder: pageBuilder,
       widgetBuilder: (context, args) => builder(context, args),
     );
   }

@@ -52,19 +52,19 @@ extension IRouteWithoutArgsExtension<R> on IRoute<R, Never> {
 }
 
 final class IRouteBuilder<R> {
-  IRouteBuilder._({required this.routeBuilder});
+  IRouteBuilder._({required this.pageBuilder});
 
-  IPageBuilder? routeBuilder;
+  IPageBuilder? pageBuilder;
 
   IRouteBuilder<T> withResult<T>() {
-    return IRouteBuilder._(routeBuilder: routeBuilder);
+    return IRouteBuilder._(pageBuilder: pageBuilder);
   }
 }
 
 extension IRouteBuilderWithArgsExtension<R> on IRouteBuilder<R> {
   IRoute<R, Never> build(Widget Function(BuildContext) builder) {
     return IRoute._(
-      routeBuilder: routeBuilder,
+      routeBuilder: pageBuilder,
       widgetBuilder: (context, _) => builder(context),
     );
   }
@@ -73,7 +73,7 @@ extension IRouteBuilderWithArgsExtension<R> on IRouteBuilder<R> {
     Widget Function(BuildContext, A) builder,
   ) {
     return IRoute._(
-      routeBuilder: routeBuilder,
+      routeBuilder: pageBuilder,
       widgetBuilder: (context, args) => builder(context, args),
     );
   }
@@ -83,6 +83,6 @@ final class IRouteFactory {
   IRouteFactory._();
 
   IRouteBuilder<void> call<R, A>({IPageBuilder? routeBuilder}) {
-    return IRouteBuilder._(routeBuilder: routeBuilder);
+    return IRouteBuilder._(pageBuilder: routeBuilder);
   }
 }

@@ -78,7 +78,7 @@ extension IRouteBuilderWithArgsExtension<R> on IRouteBuilder<R> {
 final class IRouteFactory {
   IRouteFactory._();
 
-  IRouteBuilder<void> call({IPageBuilder? routeBuilder}) {
-    return IRouteBuilder._(pageBuilder: routeBuilder);
+  IRouteBuilder<void> call({IPageBuilder? pageBuilder}) {
+    return IRouteBuilder._(pageBuilder: pageBuilder);
   }
 }

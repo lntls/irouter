@@ -36,7 +36,7 @@ class _IPage<R, A extends Record> extends Page<Object?> {
 
   @override
   Route<Object?> createRoute(BuildContext context) {
-    final content = entry._route._widgetBuilder(context, entry._args);
+    final content = entry._buildContent(context);
     final pageBuilder = entry._route._pageBuilder ?? this.pageBuilder;
     return pageBuilder.createRoute(context, this, content);
   }
@@ -57,6 +57,12 @@ class _InheritedRoutingController<T extends Record> extends InheritedWidget {
   }
 }
 
+extension _IRouteEntryExtension<R, A extends Record> on IRouteEntry<R, A> {
+  _IPage<R, A> toPage(IPageBuilder defaultPageBuilder) {
+    return _IPage(pageBuilder: defaultPageBuilder, entry: this);
+  }
+}
+
 class _IRouterDelegate<T extends Record>
     extends RouterDelegate<RouteInformation>
     with ChangeNotifier
@@ -67,7 +73,7 @@ class _IRouterDelegate<T extends Record>
     required List<IRouteEntry<Object?, Record>> Function(T) initialRoutes,
   }) : _definedRoutes = routes(IRouteFactory._()) {
     _pages = initialRoutes(_definedRoutes)
-        .map((entry) => _IPage(pageBuilder: defaultPageBuilder, entry: entry))
+        .map((entry) => entry.toPage(defaultPageBuilder))
         .toList();
   }
 

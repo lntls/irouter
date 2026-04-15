@@ -22,6 +22,10 @@ final class IRouteEntry<R, A extends Record> {
 
   final A _args;
 
+  Widget _buildContent(BuildContext context) {
+    return _route._widgetBuilder(context, _args);
+  }
+
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||

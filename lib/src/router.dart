@@ -52,7 +52,7 @@ class _InheritedRoutingController<T extends Record> extends InheritedWidget {
   final IRoutingController<T> controller;
 
   @override
-  bool updateShouldNotify(_InheritedRoutingController oldWidget) {
+  bool updateShouldNotify(_InheritedRoutingController<T> oldWidget) {
     return oldWidget.controller != controller;
   }
 }
@@ -83,7 +83,7 @@ class _IRouterDelegate<T extends Record>
 
   @override
   Widget build(BuildContext context) {
-    return _InheritedRoutingController(
+    return _InheritedRoutingController<T>(
       controller: this,
       child: Navigator(pages: _pages, onDidRemovePage: _onDidRemovePage),
     );

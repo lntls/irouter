@@ -15,7 +15,7 @@ final class IPageBuilder {
   }
 }
 
-final class IRouteEntry<R, A extends Record> {
+final class IRouteEntry<R, A> {
   const IRouteEntry._(this._route, this._args);
 
   final IRoute<R, A> _route;
@@ -35,7 +35,7 @@ final class IRouteEntry<R, A extends Record> {
   int get hashCode => Object.hash(_route, _args);
 }
 
-final class IRoute<R, A extends Record> {
+final class IRoute<R, A> {
   IRoute._({
     required Widget Function(BuildContext, A) widgetBuilder,
     IPageBuilder? pageBuilder,
@@ -62,14 +62,14 @@ final class IRouteBuilder<R> {
 }
 
 extension IRouteBuilderWithArgsExtension<R> on IRouteBuilder<R> {
-  IRoute<R, ()> build(Widget Function(BuildContext) builder) {
+  IRoute<R, Null> build(Widget Function(BuildContext) builder) {
     return IRoute._(
       pageBuilder: pageBuilder,
       widgetBuilder: (context, _) => builder(context),
     );
   }
 
-  IRoute<R, A> buildWith<A extends Record>(
+  IRoute<R, A> buildWith<A extends Object?>(
     Widget Function(BuildContext, A) builder,
   ) {
     return IRoute._(

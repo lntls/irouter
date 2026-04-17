@@ -8,7 +8,7 @@ part 'route.dart';
 abstract interface class IRoutingController<T extends Record> {
   RouterConfig<Object> get config;
 
-  Future<R> push<R, A extends Record>(IRouteEntry<R, A> Function(T) selector);
+  Future<R> push<R, A>(IRouteEntry<R, A> Function(T) selector);
 
   bool get canPop;
 
@@ -27,7 +27,7 @@ class _IRouteInformationParser
   }
 }
 
-class _IPage<R, A extends Record> extends Page<Object?> {
+class _IPage<R, A> extends Page<Object?> {
   _IPage({required this.pageBuilder, required this.entry, super.onPopInvoked})
     : super(key: ValueKey(entry));
 
@@ -57,7 +57,7 @@ class _InheritedRoutingController<T extends Record> extends InheritedWidget {
   }
 }
 
-extension _IRouteEntryExtension<R, A extends Record> on IRouteEntry<R, A> {
+extension _IRouteEntryExtension<R, A> on IRouteEntry<R, A> {
   _IPage<R, A> toPage(IPageBuilder defaultPageBuilder) {
     return _IPage(pageBuilder: defaultPageBuilder, entry: this);
   }
@@ -70,11 +70,11 @@ class _IRouterDelegate<T extends Record>
   _IRouterDelegate({
     required T Function(IRouteFactory) routes,
     required this.defaultPageBuilder,
-    required List<IRouteEntry<Object?, Record>> Function(T) initialRoutes,
+    required List<IRouteEntry<Object?, Object?>> Function(T) initialRoutes,
   }) : _definedRoutes = routes(IRouteFactory._()) {
-    _pages = initialRoutes(_definedRoutes)
-        .map((entry) => entry.toPage(defaultPageBuilder))
-        .toList();
+    _pages = initialRoutes(
+      _definedRoutes,
+    ).map((entry) => entry.toPage(defaultPageBuilder)).toList();
   }
 
   final IPageBuilder defaultPageBuilder;
@@ -96,7 +96,7 @@ class _IRouterDelegate<T extends Record>
   }
 
   @override
-  Future<R> push<R, A extends Record>(IRouteEntry<R, A> Function(T) selector) async {
+  Future<R> push<R, A>(IRouteEntry<R, A> Function(T) selector) async {
     final resultCompleter = Completer<R>();
     final entry = selector(_definedRoutes);
     final newPage = _IPage(
@@ -162,7 +162,7 @@ abstract base class IRouter<T extends Record> {
   factory IRouter({
     required IPageBuilder pageBuilder,
     required T Function(IRouteFactory) routes,
-    required List<IRouteEntry<Object?, Record>> Function(T) initialRoutes,
+    required List<IRouteEntry<Object?, Object?>> Function(T) initialRoutes,
   }) = _IRouter;
 
   IRoutingController<T> createRoutingController();
@@ -181,7 +181,7 @@ final class _IRouter<T extends Record> extends IRouter<T> {
 
   final T Function(IRouteFactory) routes;
 
-  final List<IRouteEntry<Object?, Record>> Function(T) initialRoutes;
+  final List<IRouteEntry<Object?, Object?>> Function(T) initialRoutes;
 
   @override
   IRoutingController<T> of(BuildContext context) {

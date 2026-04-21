@@ -35,7 +35,7 @@ final class IRouteEntry<R, A> {
   int get hashCode => Object.hash(_route, _args);
 }
 
-final class IRoute<R, A> {
+abstract class IRoute<R, A> {
   IRoute._({
     required Widget Function(BuildContext, A) widgetBuilder,
     IPageBuilder? pageBuilder,
@@ -45,9 +45,23 @@ final class IRoute<R, A> {
   final IPageBuilder? _pageBuilder;
 
   final Widget Function(BuildContext, A) _widgetBuilder;
+}
 
-  IRouteEntry<R, A> operator [](A args) {
+class IRouteWithArgs<R, A extends Object?> extends IRoute<R, A> {
+  IRouteWithArgs._({required super.widgetBuilder, super.pageBuilder})
+    : super._();
+
+  IRouteEntry<R, A> call(A args) {
     return IRouteEntry._(this, args);
+  }
+}
+
+class IRouteWithoutArgs<R> extends IRoute<R, void> {
+  IRouteWithoutArgs._({required super.widgetBuilder, super.pageBuilder})
+    : super._();
+
+  IRouteEntry<R, void> call() {
+    return IRouteEntry._(this, null);
   }
 }
 
@@ -62,17 +76,17 @@ final class IRouteBuilder<R> {
 }
 
 extension IRouteBuilderWithArgsExtension<R> on IRouteBuilder<R> {
-  IRoute<R, Null> build(Widget Function(BuildContext) builder) {
-    return IRoute._(
+  IRouteWithoutArgs<R> build(Widget Function(BuildContext) builder) {
+    return IRouteWithoutArgs._(
       pageBuilder: pageBuilder,
       widgetBuilder: (context, _) => builder(context),
     );
   }
 
-  IRoute<R, A> buildWith<A extends Object?>(
+  IRouteWithArgs<R, A> buildWith<A extends Object?>(
     Widget Function(BuildContext, A) builder,
   ) {
-    return IRoute._(
+    return IRouteWithArgs._(
       pageBuilder: pageBuilder,
       widgetBuilder: (context, args) => builder(context, args),
     );

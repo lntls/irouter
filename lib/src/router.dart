@@ -5,7 +5,8 @@ import 'package:flutter/widgets.dart';
 
 part 'route.dart';
 
-abstract interface class IRoutingController<T extends Record> implements Listenable {
+abstract interface class IRoutingController<T extends Record>
+    implements Listenable {
   RouterConfig<Object> get config;
 
   Future<R> push<R, A>(IRouteEntry<R, A> Function(T) selector);
@@ -108,8 +109,7 @@ class _IRouterDelegate<T extends Record>
         }
       },
     );
-    _pages.removeWhere((page) => page.key == newPage.key);
-    _pages = [..._pages, newPage];
+    _pages = [..._pages.where((page) => page.key != newPage.key), newPage];
     notifyListeners();
     return resultCompleter.future;
   }
@@ -118,7 +118,7 @@ class _IRouterDelegate<T extends Record>
   bool get canPop => _pages.length > 1;
 
   void _pop() {
-    _pages = _pages.take(_pages.length - 1).toList(growable: false);
+    _pages = _pages.take(_pages.length - 1).toList();
     notifyListeners();
   }
 

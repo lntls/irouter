@@ -118,8 +118,7 @@ class _IRouterDelegate<T extends Record>
   bool get canPop => _pages.length > 1;
 
   void _pop() {
-    _pages = _pages.sublist(0, _pages.length - 1);
-    _pages.removeLast();
+    _pages = _pages.take(_pages.length - 1).toList(growable: false);
     notifyListeners();
   }
 
@@ -135,9 +134,7 @@ class _IRouterDelegate<T extends Record>
     if (!canPop) {
       return SynchronousFuture(false);
     }
-    _pages = _pages.sublist(0, _pages.length - 1);
-    _pages.removeLast();
-    notifyListeners();
+    _pop();
     return SynchronousFuture(true);
   }
 

@@ -5,7 +5,7 @@ import 'package:flutter/widgets.dart';
 
 part 'route.dart';
 
-abstract interface class IRoutingController<T extends Record> {
+abstract interface class IRoutingController<T extends Record> implements Listenable {
   RouterConfig<Object> get config;
 
   Future<R> push<R, A>(IRouteEntry<R, A> Function(T) selector);

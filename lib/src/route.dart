@@ -37,10 +37,9 @@ final class IRouteEntry<R, A> {
 
 abstract class IRoute<R, A> {
   IRoute._({
-    required Widget Function(BuildContext, A) widgetBuilder,
-    IPageBuilder? pageBuilder,
-  }) : _widgetBuilder = widgetBuilder,
-       _pageBuilder = pageBuilder;
+    required this._widgetBuilder,
+    this._pageBuilder,
+  });
 
   final IPageBuilder? _pageBuilder;
 
